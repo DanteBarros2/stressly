@@ -1,0 +1,25 @@
+### C - Create
+POST http://localhost:8080/account
+Content-Type: application/json
+
+{
+    "name": "Fabiano",
+    "document": "123"
+}
+
+### R - Read
+GET http://localhost:8080/accounts
+Content-Type: application/json
+
+### U - Update
+PUT http://localhost:8080/accounts/123
+Content-Type: application/json
+
+{
+  "name": "Fabiano Góes",
+  "document": "123456",
+  "state": "Happy"
+}
+
+### D - Delete
+DELETE http://localhost:8080/accounts/123
