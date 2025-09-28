@@ -3,7 +3,6 @@ package com.example.stressly.service
 import com.example.stressly.model.Questionario
 import com.example.stressly.repository.QuestionarioRepository
 import org.springframework.stereotype.Service
-
 @Service
 class QuestionarioService(
     private val questionarioRepository: QuestionarioRepository
@@ -22,12 +21,9 @@ class QuestionarioService(
         questionarioRepository.save(questionario)
 
     fun atualizar(id: String, questionarioAtualizado: Questionario): Questionario {
-        val questionario = buscarPorId(id)
-        val novoQuestionario = questionario.copy(
-            respostas = questionarioAtualizado.respostas,
-            dataResposta = questionarioAtualizado.dataResposta
-        )
-        return questionarioRepository.save(novoQuestionario)
+        val existente = buscarPorId(id)
+        val atualizado = questionarioAtualizado.copy(id = existente.id)
+        return questionarioRepository.save(atualizado)
     }
 
     fun deletar(id: String) {
