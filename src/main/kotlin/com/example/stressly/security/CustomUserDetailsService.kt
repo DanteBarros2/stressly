@@ -13,9 +13,11 @@ class CustomUserDetailsService(
 ) : UserDetailsService {
 
     override fun loadUserByUsername(username: String): UserDetails {
-        val account = accountRepository.findByUsername(username)
+        val encryptedUsername = CryptoUtil.encrypt(username)
+
+        val account = accountRepository.findByUsername(encryptedUsername)
             ?: throw UsernameNotFoundException("Conta não encontrada: $username")
 
-        return User(account.username, account.password, emptyList())
+        return User(username, account.password, emptyList())
     }
 }
