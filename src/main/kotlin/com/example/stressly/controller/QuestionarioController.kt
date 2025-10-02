@@ -1,43 +1,51 @@
 package com.example.stressly.controller
 
-
+import com.example.stressly.dto.QuestionarioRequest
 import com.example.stressly.model.Questionario
-import com.example.stressly.service.QuestionarioService
+import com.example.stressly.repository.QuestionarioRepository
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.security.Principal
 
 @RestController
 @RequestMapping("/api/questionarios")
 class QuestionarioController(
-    private val questionarioService: QuestionarioService
+    private val questionarioRepository: QuestionarioRepository
 ) {
 
-    @GetMapping
-    fun listarTodos(): ResponseEntity<List<Questionario>> =
-        ResponseEntity.ok(questionarioService.listarTodos())
-
-    @GetMapping("/{id}")
-    fun buscarPorId(@PathVariable id: String): ResponseEntity<Questionario> =
-        ResponseEntity.ok(questionarioService.buscarPorId(id))
-
-    @GetMapping("/usuario/{usuarioId}")
-    fun buscarPorUsuario(@PathVariable usuarioId: String): ResponseEntity<List<Questionario>> =
-        ResponseEntity.ok(questionarioService.buscarPorUsuario(usuarioId))
-
     @PostMapping
-    fun salvar(@RequestBody questionario: Questionario): ResponseEntity<Questionario> =
-        ResponseEntity.ok(questionarioService.salvar(questionario))
+    fun criar(@RequestBody request: QuestionarioRequest, principal: Principal): ResponseEntity<Questionario> {
+        val questionario = Questionario(
+            usuarioId = principal.name, // pega do JWT
+            emojiHoje = request.emojiHoje,
+            sentimentoHoje = request.sentimentoHoje,
+            cargaTrabalho = request.cargaTrabalho,
+            cargaAfetaQualidadeVida = request.cargaAfetaQualidadeVida,
+            trabalhaAlemHorario = request.trabalhaAlemHorario,
+            sintomas = request.sintomas,
+            saudeMentalAfetaProdutividade = request.saudeMentalAfetaProdutividade,
+            relacionamentoChefe = request.relacionamentoChefe,
+            relacionamentoColegas = request.relacionamentoColegas,
+            respeitoColegas = request.respeitoColegas,
+            relacionamentoEquipe = request.relacionamentoEquipe,
+            liberdadeOpinioes = request.liberdadeOpinioes,
+            acolhimentoTime = request.acolhimentoTime,
+            cooperacaoColaboradores = request.cooperacaoColaboradores,
+            orientacoesClaras = request.orientacoesClaras,
+            comunicacaoLideranca = request.comunicacaoLideranca,
+            circulacaoInformacoes = request.circulacaoInformacoes,
+            clarezaMetas = request.clarezaMetas,
+            liderancaBemEstar = request.liderancaBemEstar,
+            liderancaDisponivel = request.liderancaDisponivel,
+            confortoReportarProblemas = request.confortoReportarProblemas,
+            reconhecimentoLideranca = request.reconhecimentoLideranca,
+            confiancaTransparenciaLideranca = request.confiancaTransparenciaLideranca
+        )
+        return ResponseEntity.ok(questionarioRepository.save(questionario))
+    }
 
-    @PutMapping("/{id}")
-    fun atualizar(
-        @PathVariable id: String,
-        @RequestBody questionario: Questionario
-    ): ResponseEntity<Questionario> =
-        ResponseEntity.ok(questionarioService.atualizar(id, questionario))
-
-    @DeleteMapping("/{id}")
-    fun deletar(@PathVariable id: String): ResponseEntity<Void> {
-        questionarioService.deletar(id)
-        return ResponseEntity.noContent().build()
+    @GetMapping
+    fun listar(principal: Principal): ResponseEntity<List<Questionario>> {
+        return ResponseEntity.ok(questionarioRepository.findByUsuarioId(principal.name))
     }
 }

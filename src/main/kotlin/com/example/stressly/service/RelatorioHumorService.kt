@@ -22,17 +22,17 @@ class RelatorioHumorService(
         val total = questionarios.size
 
         // Emoji mais frequente
-        val emojiMaisFrequente = questionarios.groupingBy { it.emojiDia }.eachCount()
+        val emojiMaisFrequente = questionarios.groupingBy { it.emojiHoje }.eachCount()
             .maxByOrNull { it.value }?.key
 
         // Sentimento mais frequente
-        val sentimentoMaisFrequente = questionarios.groupingBy { it.comoSeSente }.eachCount()
+        val sentimentoMaisFrequente = questionarios.groupingBy { it.sentimentoHoje }.eachCount()
             .maxByOrNull { it.value }?.key
 
         // Médias (tratando escala de 1 a 5 como Int)
         val mediaCargaTrabalho = questionarios.map { cargaTrabalhoToScore(it.cargaTrabalho) }.average()
-        val mediaRelChefe = questionarios.map { it.relChefe }.average()
-        val mediaRelColegas = questionarios.map { it.relColegas }.average()
+        val mediaRelChefe = questionarios.map { it.relacionamentoChefe }.average()
+        val mediaRelColegas = questionarios.map { it.relacionamentoColegas }.average()
 
         val relatorio = RelatorioHumor(
             usuarioId = usuarioId,
